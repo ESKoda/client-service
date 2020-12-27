@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +16,6 @@ public class ClientLocationIp implements Serializable {
 	private static final long serialVersionUID = 9107951610347190605L;
 
 	private Long idtClientLocation;
-	private Client client;
 	private String namCountry;
 	private String namRegion;
 	private String namCity;
@@ -40,14 +37,6 @@ public class ClientLocationIp implements Serializable {
 		this.idtClientLocation = idtClientLocation;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
-	public Client getClient() {
-		return client;
-	}
-
-	public void setClient(Client client) {
-		this.client = client;
-	}
 
 	@Column(name = "nam_country", nullable = false)
 	public String getNamCountry() {
@@ -105,10 +94,12 @@ public class ClientLocationIp implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ClientLocationIp [idtClientLocation=" + idtClientLocation + ", client=" + client + ", namCountry="
-				+ namCountry + ", namRegion=" + namRegion + ", namCity=" + namCity + ", codZip=" + codZip
-				+ ", codLatitude=" + codLatitude + ", codLongitude=" + codLongitude + "]";
+		return "ClientLocationIp [idtClientLocation=" + idtClientLocation + ", namCountry=" + namCountry
+				+ ", namRegion=" + namRegion + ", namCity=" + namCity + ", codZip=" + codZip + ", codLatitude="
+				+ codLatitude + ", codLongitude=" + codLongitude + "]";
 	}
+
+
 	
 	
 }

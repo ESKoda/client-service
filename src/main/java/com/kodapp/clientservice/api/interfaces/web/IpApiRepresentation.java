@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kodapp.clientservice.api.entities.Client;
 
 @JsonInclude
 public class IpApiRepresentation implements Serializable{
@@ -53,6 +54,17 @@ public class IpApiRepresentation implements Serializable{
 	@JsonProperty(value = "query")
 	private String query;
 
+	private Client client;
+	
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	
 	public String getStatus() {
 		return status;
 	}

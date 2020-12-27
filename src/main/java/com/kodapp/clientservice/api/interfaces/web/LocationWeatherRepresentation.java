@@ -20,10 +20,23 @@ public class LocationWeatherRepresentation implements Serializable{
 	private String lattLong;
 	
 	@JsonProperty(value = "woeid")
-	private int woeid;
+	private Long woeid;
 	
 	@JsonProperty(value = "distance")
-	private int distance;
+	private Long distance;
+	
+
+	public LocationWeatherRepresentation(String title, String locationType, String lattLong, Long woeid, Long distance) {
+		this.title = title;
+		this.locationType = locationType;
+		this.lattLong = lattLong;
+		this.woeid = woeid;
+		this.distance = distance;
+	}
+	
+	public LocationWeatherRepresentation() {
+		
+	}
 
 	public String getTitle() {
 		return title;
@@ -49,19 +62,19 @@ public class LocationWeatherRepresentation implements Serializable{
 		this.lattLong = lattLong;
 	}
 
-	public int getWoeid() {
+	public Long getWoeid() {
 		return woeid;
 	}
 
-	public void setWoeid(int woeid) {
+	public void setWoeid(Long woeid) {
 		this.woeid = woeid;
 	}
 
-	public int getDistance() {
+	public Long getDistance() {
 		return distance;
 	}
 
-	public void setDistance(int distance) {
+	public void setDistance(Long distance) {
 		this.distance = distance;
 	}
 

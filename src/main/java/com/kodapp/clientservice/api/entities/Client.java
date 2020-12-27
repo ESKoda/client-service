@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +19,11 @@ public class Client implements Serializable{
 	private static final long serialVersionUID = -4911835440201572887L;
 	
 	private Long idtClient;
+	private ClientLocationIp clientLocation;
 	private String namClient;
 	private int ageClient;
 	private String codIpAddress;
+	private ClientWeather clientWeather;
 	
 	public Client(){
 		
@@ -60,13 +65,34 @@ public class Client implements Serializable{
 	public void setCodIpAddress(String codIpAddress) {
 		this.codIpAddress = codIpAddress;
 	}
+	
+	@JoinColumn(name = "idt_client_location")
+	@ManyToOne(fetch = FetchType.EAGER)
+	public ClientLocationIp getClientLocation() {
+		return clientLocation;
+	}
+
+	public void setClientLocation(ClientLocationIp clientLocation) {
+		this.clientLocation = clientLocation;
+	}
+
+	@JoinColumn(name = "idt_client_weather")
+	@ManyToOne(fetch = FetchType.EAGER)
+	public ClientWeather getClientWeather() {
+		return clientWeather;
+	}
+
+	public void setClientWeather(ClientWeather clientWeather) {
+		this.clientWeather = clientWeather;
+	}
 
 	@Override
 	public String toString() {
-		return "Client [idtClient=" + idtClient + ", namClient=" + namClient + ", ageClient=" + ageClient
-				+ ", codIpAddress=" + codIpAddress + "]";
+		return "Client [idtClient=" + idtClient + ", clientLocation=" + clientLocation + ", namClient=" + namClient
+				+ ", ageClient=" + ageClient + ", codIpAddress=" + codIpAddress + ", clientWeather=" + clientWeather
+				+ "]";
 	}
-	
+
 	
 	
 }
