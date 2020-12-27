@@ -4,8 +4,8 @@
   `age_client` decimal(10,0) DEFAULT NULL,
   `cod_ip_adress` varchar(255) NOT NULL,
   `dat_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `idt_client_location` bigint,
-  `idt_client_weather` bigint 
+  `idt_client_location` bigint NULL,
+  `idt_client_weather` bigint NULL
   PRIMARY KEY (`idt_client`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
@@ -24,7 +24,7 @@ CREATE TABLE `client_weather` (
   `idt_client_weather` bigint NOT NULL AUTO_INCREMENT,
   `min_temperature` float(20,10) NOT NULL,
   `max_temperature` float(20,10) NOT NULL,
-  `dat_applicable` date
+  `dat_applicable` date NULL
   PRIMARY KEY (`idt_client_weather`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
