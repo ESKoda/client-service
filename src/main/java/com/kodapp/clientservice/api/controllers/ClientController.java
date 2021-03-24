@@ -55,8 +55,10 @@ public class ClientController {
 	private LocationWeatherServiceImpl locationWeatherServiceImpl;
 	
 	@Autowired
-	private ClientWeatherRepository clientWeatherRepository;
-		
+	private ClientWeatherRepository clientWeatherRepository;	
+
+	ClientDto clientDto;
+	
 	public ClientController() {
 		
 	}
@@ -75,7 +77,7 @@ public class ClientController {
 	 * @return ResponseEntity<Response<ClientDto>>
 	 * @throws NotFoundException 
 	 */
-	@GetMapping(value = "/id/{idtClient}")
+	@GetMapping(value = "/{idtClient}")
 	public ResponseEntity<Response<ClientDto>> returnClientById(@PathVariable("idtClient") Long idtClient){
 		log.info("Bucando cliente por ID: {}", idtClient);
 		Response<ClientDto> response = new Response<ClientDto>();
@@ -87,31 +89,9 @@ public class ClientController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		response.setData(this.convertClientToClientDto(client.get()));
+		clientDto = new ClientDto(client.get());
+		response.setData(clientDto);
 		return ResponseEntity.ok(response);
-	}
-
-	/**
-	 * Converte a entidade Client para ClientDto
-	 * @param idtClient
-	 * @return ClientDto
-	 */	
-	private ClientDto convertClientToClientDto(Client client) {
-		ClientDto clientDto = new ClientDto();
-		clientDto.setIdtClient(Optional.of(client.getIdtClient()));
-		clientDto.setNamClient(client.getNamClient());
-		clientDto.setAgeClient(client.getAgeClient());
-		clientDto.setCodLatitude(client.getClientLocation().getCodLatitude());
-		clientDto.setCodLongitude(client.getClientLocation().getCodLongitude());
-		clientDto.setCodZip(client.getClientLocation().getCodZip());
-		clientDto.setNamCity(client.getClientLocation().getNamCity());
-		clientDto.setNamCountry(client.getClientLocation().getNamCountry());
-		clientDto.setNamRegion(client.getClientLocation().getNamRegion());
-		clientDto.setCodIpAddress(client.getCodIpAddress());
-		clientDto.setMinTemperature(client.getClientWeather().getMinTemperature());
-		clientDto.setMaxTemperature(client.getClientWeather().getMaxTemperature());
-		clientDto.setDatApplicable(client.getClientWeather().getDatApplicable());
-		return clientDto;
 	}
 	
 	/**
@@ -142,18 +122,16 @@ public class ClientController {
 		client.setClientWeather(clientWeather);
 		this.clientService.createClient(client);
 		
-		response.setData(this.convertClientToClientDto(client));
+		clientDto = new ClientDto(client);
+		response.setData(clientDto);
+		
 		return ResponseEntity.ok(response);
 	}
 	
 	private ClientWeather convertClientDtoToClientWeather(ClientLocationIp cliLocIp, BindingResult result) throws Exception {
 		ClientDto clientDto = locationWeatherServiceImpl.getLocationByLattLong(cliLocIp.getCodLatitude(), cliLocIp.getCodLongitude());
 		ClientDto clientDto2 = locationWeatherServiceImpl.getTemperatureByWoeid(clientDto.getWoeid());
-
-		ClientWeather clientWeather = new ClientWeather();
-		clientWeather.setDatApplicable(clientDto2.getDatApplicable());
-		clientWeather.setMaxTemperature(clientDto2.getMaxTemperature());
-		clientWeather.setMinTemperature(clientDto2.getMinTemperature());
+		ClientWeather clientWeather = new ClientWeather(clientDto2);
 		return clientWeather;
 	}
 	
@@ -194,7 +172,7 @@ public class ClientController {
 				result.addError(new ObjectError("client", "Client não encontrado"));
 			}
 		}
-				
+
 		client.setNamClient(clientDto.getNamClient());
 		client.setAgeClient(clientDto.getAgeClient());
 		if (clientDto.getCodIpAddress() != null) {
@@ -206,7 +184,7 @@ public class ClientController {
 	}
 
 	private ClientLocationIp convertClientDtoToClientLocationIp(Client client, ClientDto clientDto, BindingResult result) {
-		ClientLocationIp clientLocationIp = new ClientLocationIp();
+		ClientLocationIp clientLocationIp = new ClientLocationIp(clientDto);
 		if(client.getClientLocation().getIdtClientLocation() != null) {
 			Optional<ClientLocationIp> cliLoc = this.clientLocationIpRepository.findById(client.getClientLocation().getIdtClientLocation());
 			if(cliLoc.isPresent()) {
@@ -215,24 +193,12 @@ public class ClientController {
 				result.addError(new ObjectError("client", "Client não encontrado"));
 			}
 		}
-		clientLocationIp.setCodLatitude(clientDto.getCodLatitude());
-		clientLocationIp.setCodLongitude(clientDto.getCodLongitude());
-		clientLocationIp.setCodZip(clientDto.getCodZip());
-		clientLocationIp.setNamCity(clientDto.getNamCity());
-		clientLocationIp.setNamCountry(clientDto.getNamCountry());
-		clientLocationIp.setNamRegion(clientDto.getNamRegion());
 		return clientLocationIp;
 	}
 
 	private ClientLocationIp convertClientDtoToClientLocationIp(BindingResult result) throws Exception {	
 		ClientDto clientDto = ipApiServiceImpl.getLocalizationIp(getIp());
-		ClientLocationIp clientLocationIp = new ClientLocationIp();
-		clientLocationIp.setCodLatitude(clientDto.getCodLatitude());
-		clientLocationIp.setCodLongitude(clientDto.getCodLongitude());
-		clientLocationIp.setCodZip(clientDto.getCodZip());
-		clientLocationIp.setNamCity(clientDto.getNamCity());
-		clientLocationIp.setNamCountry(clientDto.getNamCountry());
-		clientLocationIp.setNamRegion(clientDto.getNamRegion());
+		ClientLocationIp clientLocationIp = new ClientLocationIp(clientDto);
 		return clientLocationIp;
 	}
 
@@ -245,7 +211,7 @@ public class ClientController {
 	 * @return ResponseEntity<Response<ClientDto>>
 	 * @throws Exception 
 	 */
-	@PutMapping(value = "/update/{idtClient}")
+	@PutMapping(value = "/{idtClient}")
 	public ResponseEntity<Response<ClientDto>> updateCLient(@PathVariable("idtClient") Long idtClient, @Valid @RequestBody ClientDto clientDto, BindingResult result) throws Exception{
 		log.info("Atualizando um cliente: {}", clientDto.toString());
 		Response<ClientDto> response = new Response<ClientDto>(); //response vai armazenar ClientDto
@@ -265,12 +231,14 @@ public class ClientController {
 		client.setClientLocation(clientLocationIp);
 		client.setClientWeather(clientWeather);
 		this.clientService.createClient(client);
-	
-		response.setData(this.convertClientToClientDto(client));
+
+		clientDto = new ClientDto(client);
+		response.setData(clientDto);
+		
 		return ResponseEntity.ok(response);
 	}
 	
-	@DeleteMapping(value = "/delete/{idtClient}")
+	@DeleteMapping(value = "/{idtClient}")
 	public ResponseEntity<Response<String>> deleteClientPorId(@PathVariable("idtClient") Long idtClient){
 		log.info("Deletando cliente por ID: {}", idtClient);
 		Response<String> response = new Response<String>(); //response soh vai retornar os erros por isso String
@@ -289,14 +257,14 @@ public class ClientController {
 		if(!clientWeather.isPresent()) {
 			log.info("Erro ao deletar previsao do tempo do cliente, devido a fk IdtClientWeather do cliente id: {} ser invalido", idtClient);
 		}		
-
-		this.clientWeatherRepository.deleteById(client.get().getClientWeather().getIdtClientWeather());
-		this.clientLocationIpRepository.deleteById(client.get().getClientLocation().getIdtClientLocation());
+		
 		this.clientService.deleteClientById(idtClient);
+		this.clientLocationIpRepository.deleteById(client.get().getClientLocation().getIdtClientLocation());
+		this.clientWeatherRepository.deleteById(client.get().getClientWeather().getIdtClientWeather());
 		return ResponseEntity.ok(new Response<String>());
 	}
 	
-    @GetMapping(value = "/all")
+    @GetMapping
     public Iterable<Client> returnListAllClient(){
         return clientService.listAllClient();
     }

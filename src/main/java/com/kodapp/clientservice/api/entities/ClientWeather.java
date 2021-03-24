@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.kodapp.clientservice.api.dtos.ClientDto;
+
 @Entity
 @Table(name = "client_weather")
 public class ClientWeather implements Serializable{
@@ -24,7 +26,13 @@ public class ClientWeather implements Serializable{
 	public ClientWeather() {
 		
 	}
-
+	
+	public ClientWeather (ClientDto clientDto) {
+		this.setDatApplicable(clientDto.getDatApplicable());
+		this.setMaxTemperature(clientDto.getMaxTemperature());
+		this.setMinTemperature(clientDto.getMinTemperature());
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getIdtClientWeather() {

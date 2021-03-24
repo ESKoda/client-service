@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.kodapp.clientservice.api.dtos.ClientDto;
+
 @Entity
 @Table(name = "client_location")
 public class ClientLocationIp implements Serializable {
@@ -23,10 +25,21 @@ public class ClientLocationIp implements Serializable {
 	private Float codLatitude;
 	private Float codLongitude;
 	
+//	private HttpServletRequest request;
+	
 	public ClientLocationIp() {
 		
 	}
 
+	public ClientLocationIp (ClientDto clientDto) {
+		this.setCodLatitude(clientDto.getCodLatitude());
+		this.setCodLongitude(clientDto.getCodLongitude());
+		this.setCodZip(clientDto.getCodZip());
+		this.setNamCity(clientDto.getNamCity());
+		this.setNamCountry(clientDto.getNamCountry());
+		this.setNamRegion(clientDto.getNamRegion());
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getIdtClientLocation() {

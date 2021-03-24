@@ -28,7 +28,7 @@ public class Client implements Serializable{
 	public Client(){
 		
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getIdtClient() {

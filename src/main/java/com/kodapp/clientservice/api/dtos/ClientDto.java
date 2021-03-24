@@ -3,6 +3,8 @@ package com.kodapp.clientservice.api.dtos;
 import java.util.Date;
 import java.util.Optional;
 
+import com.kodapp.clientservice.api.entities.Client;
+
 public class ClientDto {
 
 	private Optional<Long> idtClient = Optional.empty();
@@ -30,6 +32,22 @@ public class ClientDto {
 		this.maxTemperature=maxTemperature;
 		this.datApplicable=applicableDate;
 	}
+	
+	public ClientDto (Client client) {
+	this.setIdtClient(Optional.of(client.getIdtClient()));
+	this.setNamClient(client.getNamClient());
+	this.setAgeClient(client.getAgeClient());
+	this.setCodLatitude(client.getClientLocation().getCodLatitude());
+	this.setCodLongitude(client.getClientLocation().getCodLongitude());
+	this.setCodZip(client.getClientLocation().getCodZip());
+	this.setNamCity(client.getClientLocation().getNamCity());
+	this.setNamCountry(client.getClientLocation().getNamCountry());
+	this.setNamRegion(client.getClientLocation().getNamRegion());
+	this.setCodIpAddress(client.getCodIpAddress());
+	this.setMinTemperature(client.getClientWeather().getMinTemperature());
+	this.setMaxTemperature(client.getClientWeather().getMaxTemperature());
+	this.setDatApplicable(client.getClientWeather().getDatApplicable());
+}
 	
 	public ClientDto(Long woeid) {
 		this.woeid = woeid;
